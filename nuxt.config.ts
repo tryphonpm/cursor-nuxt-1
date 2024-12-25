@@ -19,11 +19,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
   },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
+  modules: ['@pinia/nuxt', '@nuxt/ui'],
+  ui: {
+    global: true,
   },
+  colorMode: {
+    preference: 'dark',
+  },
+  css: ['~/assets/css/main.css'],
 });

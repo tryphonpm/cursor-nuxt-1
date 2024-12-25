@@ -1,49 +1,42 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Connexion</h2>
+  <div class="min-h-screen flex flex-center bg-login">
+    <div class="login-card">
+      <div class="login-header">
+        <h2 class="login-title">Connexion</h2>
       </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div class="rounded-md shadow-sm space-y-4">
-          <div>
-            <label for="email" class="sr-only">Email</label>
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Adresse email"
-            />
-          </div>
-          <div>
-            <label for="password" class="sr-only">Mot de passe</label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Mot de passe"
-            />
-          </div>
+      <form class="login-form" @submit.prevent="handleLogin">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            required
+            class="form-input"
+            placeholder="Adresse email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            required
+            class="form-input"
+            placeholder="Mot de passe"
+          />
         </div>
 
-        <div>
-          <button
-            type="submit"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Se connecter
-          </button>
-        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          Se connecter
+        </button>
       </form>
 
-      <div class="text-center mt-4">
-        <p class="text-sm text-gray-600">
+      <div class="login-footer">
+        <p>
           Pas encore de compte ?
-          <NuxtLink to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+          <NuxtLink to="/register" class="link-primary">
             Créer un compte
           </NuxtLink>
         </p>
@@ -80,3 +73,63 @@ async function handleLogin() {
   }
 }
 </script>
+
+<style scoped>
+.bg-login {
+  background-color: var(--bg-color);
+}
+
+.login-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-header {
+  margin-bottom: 2rem;
+}
+
+.login-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.login-form {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.link-primary {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-primary:hover {
+  text-decoration: underline;
+}
+</style>
