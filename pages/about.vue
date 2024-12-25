@@ -6,7 +6,7 @@ useHead({
 </script>
 
 <template>
-  <div>
-    <h1>À propos</h1>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <h1 class="text-5xl font-bold text-blue-600">A propos</h1>
   </div>
 </template>
