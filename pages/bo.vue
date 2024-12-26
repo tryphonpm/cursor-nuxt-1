@@ -1,6 +1,7 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 definePageMeta({
-  layout: 'admin',
+  layout: 'default',
+  middleware: ['auth'],
 });
 </script>
 

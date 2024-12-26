@@ -1,12 +1,16 @@
-export default defineNuxtRouteMiddleware((to) => {
-  const user = useState('user');
-  const publicRoutes = ['/login', '/register'];
+export default defineNuxtRouteMiddleware(async (to) => {
+  const authStore = useAuthStore();
+  const publicRoutes = ['/login', '/register', '/forgot-password'];
 
-  if (user.value && publicRoutes.includes(to.path)) {
-    return navigateTo('/');
+  // Vérifier si la route actuelle est publique
+  if (publicRoutes.includes(to.path)) {
+    return;
   }
 
-  if (!user.value && !publicRoutes.includes(to.path)) {
+  // Vérifier l'authentification
+  const isAuthenticated = await authStore.checkAuth();
+
+  if (!isAuthenticated) {
     return navigateTo('/login');
   }
 });

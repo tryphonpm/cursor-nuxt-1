@@ -1,135 +1,79 @@
 <template>
-  <div class="min-h-screen flex flex-center bg-login">
-    <div class="login-card">
-      <div class="login-header">
-        <h2 class="login-title">Connexion</h2>
-      </div>
-      <form class="login-form" @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            id="email"
+  <div class="flex min-h-screen items-center justify-center">
+    <div class="w-full max-w-md space-y-8 p-6">
+      <h2 class="text-center text-3xl font-bold">Connexion</h2>
+
+      <form @submit.prevent="handleLogin" class="space-y-6">
+        <div>
+          <p class="text-sm text-gray-600 mb-2">Entrez votre adresse email de connexion</p>
+          <UInput
             v-model="email"
             type="email"
+            label="Adresse email"
+            placeholder="exemple@domaine.com"
+            title="Entrez votre adresse email"
             required
-            class="form-input"
-            placeholder="Adresse email"
+            help="Entrez l'email associé à votre compte"
           />
         </div>
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <input
-            id="password"
+
+        <div>
+          <p class="text-sm text-gray-600 mb-2">Entrez votre mot de passe pour vous connecter</p>
+          <UInput
             v-model="password"
             type="password"
+            label="Mot de passe"
+            placeholder="Votre mot de passe"
+            title="Entrez votre mot de passe"
             required
-            class="form-input"
-            placeholder="Mot de passe"
+            help="Entrez votre mot de passe"
           />
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full">
-          Se connecter
-        </button>
-      </form>
+        <div class="space-y-4">
+          <UButton type="submit" color="primary" :loading="loading" block>Se connecter</UButton>
 
-      <div class="login-footer">
-        <p>
-          Pas encore de compte ?
-          <NuxtLink to="/register" class="link-primary">
-            Créer un compte
-          </NuxtLink>
+          <UButton to="/register" color="gray" variant="soft" block>Créer un compte</UButton>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="text-gray-600">
+            Pas encore de compte ?
+            <NuxtLink to="/register" class="text-blue-600 hover:text-blue-800">S'inscrire</NuxtLink>
+          </p>
+        </div>
+
+        <p v-if="error" class="text-red-500 text-center mt-4">
+          {{ error }}
         </p>
-      </div>
+      </form>
     </div>
   </div>
 </template>
 
-<script setup>
-definePageMeta({
-  middleware: ['auth'],
-});
-
+<script setup lang="ts">
+const authStore = useAuthStore();
 const email = ref('');
 const password = ref('');
-const user = useState('user');
-const router = useRouter();
+const error = ref('');
+const loading = ref(false);
 
 async function handleLogin() {
-  try {
-    const response = await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: {
-        email: email.value,
-        password: password.value,
-      },
-    });
+  error.value = '';
+  loading.value = true;
 
-    user.value = response.user;
-    await router.push('/');
-  } catch (error) {
-    console.error('Erreur de connexion:', error);
-    alert('Erreur lors de la connexion');
+  try {
+    const success = await authStore.login(email.value, password.value);
+
+    if (success) {
+      navigateTo('/dashboard');
+    } else {
+      error.value = 'Identifiants invalides';
+    }
+  } catch (e) {
+    error.value = 'Une erreur est survenue lors de la connexion';
+  } finally {
+    loading.value = false;
   }
 }
 </script>
-
-<style scoped>
-.bg-login {
-  background-color: var(--bg-color);
-}
-
-.login-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.login-header {
-  margin-bottom: 2rem;
-}
-
-.login-title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  text-align: center;
-  color: var(--text-color);
-}
-
-.login-form {
-  margin-bottom: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.btn-full {
-  width: 100%;
-  margin-top: 1.5rem;
-}
-
-.login-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-.link-primary {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.link-primary:hover {
-  text-decoration: underline;
-}
-</style>

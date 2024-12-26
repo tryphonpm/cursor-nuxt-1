@@ -1,49 +1,52 @@
-import { User } from '../../models/User';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { User } from '../../models/user';
+import bcrypt from 'bcrypt';
 
 export default defineEventHandler(async (event) => {
-  try {
-    const body = await readBody(event);
-    const { email, password } = body;
+  const body = await readBody(event);
+  const { email, password } = body;
 
+  try {
+    // Rechercher l'utilisateur par email
     const user = await User.findOne({ email });
+
     if (!user) {
       throw createError({
         statusCode: 401,
-        message: 'Email ou mot de passe incorrect',
+        message: 'Identifiants invalides',
       });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
+    // Vérifier le mot de passe
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
       throw createError({
         statusCode: 401,
-        message: 'Email ou mot de passe incorrect',
+        message: 'Identifiants invalides',
       });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'default_secret', {
-      expiresIn: '24h',
+    // Générer le JWT
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: '7d',
     });
 
-    setCookie(event, 'auth_token', token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24, // 24 heures
-      path: '/',
-    });
-
+    // Retourner le token et les informations de l'utilisateur
     return {
+      token,
       user: {
         id: user._id,
         email: user.email,
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
       },
     };
-  } catch (error) {
+  } catch (error: any) {
     throw createError({
-      statusCode: 500,
-      message: 'Erreur lors de la connexion',
+      statusCode: error.statusCode || 500,
+      message: error.message || 'Erreur lors de la connexion',
     });
   }
 });

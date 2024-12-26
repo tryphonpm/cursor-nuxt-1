@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { useCounterStore } from '~/stores/counter';
 
+definePageMeta({
+  layout: 'default',
+  middleware: ['auth'],
+});
+
 const counter = useCounterStore();
 
 useHead({
